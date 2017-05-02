@@ -16,50 +16,54 @@ public class Ipv4Client {
 			InputStream is = socket.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is, "UTF-8");
             BufferedReader br = new BufferedReader(isr);
-			int size = MINSIZE + 2;
-			byte [] packet = new byte [size];
-			//Version and HLen
-			packet [0] = 0x45;
-			//TOS
-			packet[1] = 0;
-			//Length
-			packet[2] = (byte) (size >>> 8);
-			packet[3] = (byte) size;
-			//Identification
-			packet[4] = 0;
-			packet[5] = 0;
-			//Flags and Offset
-			packet[6] = 0x40;
-			packet[7] = 0;
-			//Time to Live
-			packet[8] = 50;
-			//Protocol
-			packet[9] = 6;
-			//Source Address
-			packet[12] = (byte) 0x6a;
-			packet[13] = (byte) 0x64;
-			packet[14] = (byte) 0xf5;
-			packet[15] = (byte) 0x0d;
-			//Destination Address
-			packet[16] = (byte) 0x34;
-			packet[17] = (byte) 0x25;
-			packet[18] = (byte) 0x58;
-			packet[19] = (byte) 0x9a;
-			//Checksum
-			short check = checksum(packet);
-			packet[10] = (byte) (check>>>8);
-			packet[11] = (byte) check;
-			//Assume data is 0
-			out.write(packet);
-			System.out.println("Packet: " + 1);
-			System.out.println("Data Length: " + (size - 20));
-			System.out.println(br.readLine());
+			int data = 1;
+			for (int i = 0; i < 12; i++) {
+				data *= 2;
+				int size = MINSIZE + data;
+				byte [] packet = new byte [size];
+				//Version and HLen
+				packet [0] = 0x45;
+				//TOS
+				packet[1] = 0;
+				//Length
+				packet[2] = (byte) (size >>> 8);
+				packet[3] = (byte) size;
+				//Identification
+				packet[4] = 0;
+				packet[5] = 0;
+				//Flags and Offset
+				packet[6] = 0x40;
+				packet[7] = 0;
+				//Time to Live
+				packet[8] = 50;
+				//Protocol
+				packet[9] = 6;
+				//Source Address
+				packet[12] = (byte) 0x6a;
+				packet[13] = (byte) 0x64;
+				packet[14] = (byte) 0xf5;
+				packet[15] = (byte) 0x0d;
+				//Destination Address
+				packet[16] = (byte) 0x34;
+				packet[17] = (byte) 0x25;
+				packet[18] = (byte) 0x58;
+				packet[19] = (byte) 0x9a;
+				//Checksum
+				short check = checksum(packet);
+				packet[10] = (byte) (check>>>8);
+				packet[11] = (byte) check;
+				//Assume data is 0
+				out.write(packet);
+				System.out.println("Packet: " + (i + 1));
+				System.out.println("Data Length: " + data);
+				System.out.println(br.readLine());
 				
 				
 			}
 			
 			
 			
+		}
 		
 	}
 	public static short checksum(byte[] b) {
